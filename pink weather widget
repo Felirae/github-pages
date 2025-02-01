@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pink Weather Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Karla', sans-serif;
+      background: #ffe6e6; /* Light pink background */
+      color: #5a5a5a; /* Dark gray text for contrast */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .weather-widget {
+      background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 220px;
+      backdrop-filter: blur(10px); /* Adds a frosted glass effect */
+    }
+    .weather-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+      color: #ff6f61; /* Coral color for the icon */
+    }
+    .temperature {
+      font-size: 32px;
+      font-weight: 700;
+      color: #333; /* Darker text for emphasis */
+    }
+    .description {
+      font-size: 16px;
+      margin-top: 10px;
+      color: #666; /* Slightly lighter text */
+      text-transform: capitalize; /* Capitalize the weather description */
+    }
+    .location {
+      font-size: 14px;
+      margin-top: 5px;
+      color: #888; /* Light gray for location */
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-widget">
+    <div class="weather-icon">☀️</div>
+    <div class="temperature">--°C</div>
+    <div class="description">Loading...</div>
+    <div class="location">Mainz, Germany</div>
+  </div>
+
+  <script>
+    // Replace with your own API key from OpenWeatherMap
+    const apiKey = 'YOUR_API_KEY';
+    const city = 'Mainz,DE'; // City and country code for Mainz, Germany
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const temperature = Math.round(data.main.temp);
+        const description = data.weather[0].description;
+        const icon = data.weather[0].icon;
+        const location = data.name;
+
+        document.querySelector('.temperature').textContent = `${temperature}°C`;
+        document.querySelector('.description').textContent = description;
+        document.querySelector('.location').textContent = location;
+        document.querySelector('.weather-icon').textContent = getWeatherIcon(icon);
+      })
+      .catch(error => console.error('Error fetching weather data:', error));
+
+    function getWeatherIcon(iconCode) {
+      const iconMap = {
+        '01d': '☀️', '01n': '🌙',
+        '02d': '⛅', '02n': '⛅',
+        '03d': '☁️', '03n': '☁️',
+        '04d': '☁️', '04n': '☁️',
+        '09d': '🌧️', '09n': '🌧️',
+        '10d': '🌦️', '10n': '🌦️',
+        '11d': '⛈️', '11n': '⛈️',
+        '13d': '❄️', '13n': '❄️',
+        '50d': '🌫️', '50n': '🌫️'
+      };
+      return iconMap[iconCode] || '🌍';
+    }
+  </script>
+</body>
+</html>
